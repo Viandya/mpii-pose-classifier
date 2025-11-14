@@ -6,9 +6,11 @@
 (например, dance, swim, run). Модель обучается **с нуля**, без 
 предобученных моделей, на датасете MPII Human Pose.
 
+
 ## Структура проекта
 
 src/
+
 config.py — пути, гиперпараметры
 
 dataset.py — датасет PyTorch
@@ -23,6 +25,7 @@ evaluate.py — оценка качества
 
 utils.py — графики и вспомогательные функции
 
+
 ## Как запустить обучение
 python3 src/train.py
 
@@ -31,7 +34,7 @@ python3 src/evaluate.py
 
 Метрика качества: **macro F1-score**.
 
-## ⚙️ Технологии
+## Технологии
 - Python, PyTorch
 - torchvision, PIL
 - matplotlib
