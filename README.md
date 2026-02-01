@@ -11,19 +11,8 @@
 
 src/
 
-config.py — пути, гиперпараметры
+<img width="269" height="620" alt="Screenshot 2026-02-01 at 17 27 02" src="https://github.com/user-attachments/assets/fd26f8bc-652d-4a47-8760-247e8f68087a" />
 
-dataset.py — датасет PyTorch
-
-transforms.py — аугментации и преобразования
-
-model.py — архитектура нейросети
-
-train.py — обучение модели
-
-evaluate.py — оценка качества
-
-utils.py — графики и вспомогательные функции
 
 
 ## Как запустить обучение
@@ -39,3 +28,11 @@ python3 src/evaluate.py
 - torchvision, PIL
 - matplotlib
 - sklearn
+
+### Docker
+```bash
+# Сборка образа
+docker build -t mpii-pose-classifier:latest .
+
+# Запуск контейнера
+docker run -p 8000:8000 mpii-pose-classifier:latest
