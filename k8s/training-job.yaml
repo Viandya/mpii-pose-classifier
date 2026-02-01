@@ -1,98 +1,26 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: pose-classifier-training
-  namespace: default
-  labels:
-    app: pose-classifier
-    component: training
+  name: pose-classifier-train
 spec:
-  ttlSecondsAfterFinished: 86400  
-  backoffLimit: 3
   template:
-    metadata:
-      labels:
-        app: pose-classifier
-        component: training
     spec:
       containers:
       - name: trainer
-        image: your-registry/mpii-pose-classifier-trainer:latest
+        image: your-registry/pose-classifier:latest
         command: ["python", "src/train.py"]
-        args: ["--config", "configs/production.yaml"]
-        env:
-        - name: WANDB_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: ml-secrets
-              key: wandb-api-key
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: s3-secrets
-              key: aws-access-key-id
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: s3-secrets
-              key: aws-secret-access-key
         volumeMounts:
-        - name: data-volume
-          mountPath: /data
-        - name: models-volume
-          mountPath: /models
-        - name: cache-volume
-          mountPath: /cache
+        - mountPath: /app/data
+          name: data-volume
         resources:
           requests:
-            memory: "8Gi"
-            cpu: "2000m"
-            nvidia.com/gpu: 1  
+            memory: "4Gi"
+            cpu: "2"
           limits:
-            memory: "16Gi"
-            cpu: "4000m"
-            nvidia.com/gpu: 1  
+            memory: "8Gi"
+            cpu: "4"
       volumes:
       - name: data-volume
         persistentVolumeClaim:
           claimName: data-pvc
-      - name: models-volume
-        persistentVolumeClaim:
-          claimName: model-pvc
-      - name: cache-volume
-        emptyDir: {}
-      restartPolicy: OnFailure
-      nodeSelector:
-        accelerator: nvidia-gpu  
-
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: pose-classifier-retraining
-  namespace: default
-spec:
-  schedule: "0 2 * * 0" 
-  concurrencyPolicy: Forbid
-  startingDeadlineSeconds: 300
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-          - name: retrainer
-            image: your-registry/mpii-pose-classifier-trainer:latest
-            command: ["python", "src/train.py"]
-            args: ["--config", "configs/production.yaml", "--retrain"]
-            volumeMounts:
-            - name: data-volume
-              mountPath: /data
-            - name: models-volume
-              mountPath: /models
-          volumes:
-          - name: data-volume
-            persistentVolumeClaim:
-              claimName: data-pvc
-          - name: models-volume
-            persistentVolumeClaim:
-              claimName: model-pvc
-          restartPolicy: OnFailure
+      restartPolicy: Never
