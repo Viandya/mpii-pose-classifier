@@ -9,9 +9,8 @@
 
 ## Структура проекта
 
-src/
+<img width="263" height="547" alt="Screenshot 2026-02-01 at 18 03 46" src="https://github.com/user-attachments/assets/4ec4e197-83aa-4563-9c5c-2950dcb5a829" />
 
-<img width="269" height="620" alt="Screenshot 2026-02-01 at 17 27 02" src="https://github.com/user-attachments/assets/fd26f8bc-652d-4a47-8760-247e8f68087a" />
 
 
 
