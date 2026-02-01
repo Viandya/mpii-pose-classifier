@@ -2,121 +2,36 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pose-classifier-api
-  namespace: default
-  labels:
-    app: pose-classifier
-    component: api
-    environment: production
 spec:
-  replicas: 3
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+  replicas: 2
   selector:
     matchLabels:
       app: pose-classifier
-      component: api
   template:
     metadata:
       labels:
         app: pose-classifier
-        component: api
-        version: "1.0.0"
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8000"
-        prometheus.io/path: "/metrics"
     spec:
       containers:
       - name: api
-        image: your-registry/mpii-pose-classifier:latest
-        imagePullPolicy: Always
+        image: your-registry/pose-classifier-api:latest
         ports:
         - containerPort: 8000
-          name: http
-          protocol: TCP
         env:
-        - name: ENVIRONMENT
-          value: "production"
         - name: MODEL_PATH
-          value: "/models/best_model.pth"
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: pose-classifier-secrets
-              key: database-url
-        - name: REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: pose-classifier-secrets
-              key: redis-url
-        - name: LOG_LEVEL
-          value: "INFO"
-        volumeMounts:
-        - name: models-volume
-          mountPath: /models
-          readOnly: true
-        - name: config-volume
-          mountPath: /app/configs
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "2Gi"
-            cpu: "1000m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-            scheme: HTTP
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+          value: "/app/models/best_model.pth"
         readinessProbe:
           httpGet:
             path: /health
             port: 8000
-            scheme: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 1
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-          readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: false
-      volumes:
-      - name: models-volume
-        persistentVolumeClaim:
-          claimName: model-pvc
-      - name: config-volume
-        configMap:
-          name: pose-classifier-config
-      imagePullSecrets:
-      - name: registry-credentials
-      restartPolicy: Always
-
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: pose-classifier-service
-  namespace: default
-  labels:
-    app: pose-classifier
-    component: api
 spec:
   selector:
     app: pose-classifier
-    component: api
   ports:
-  - name: http
-    port: 80
+  - port: 80
     targetPort: 8000
-    protocol: TCP
-  type: ClusterIP
-  sessionAffinity: None
