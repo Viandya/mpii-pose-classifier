@@ -1,0 +1,11 @@
+torch
+torchvision
+scikit-learn
+matplotlib
+pillow
+pandas
+numpy
+# for production:
+gunicorn 
+fastapi  
+prometheus-client  
