@@ -1,0 +1,43 @@
+model:
+  name: "PoseClassifier"
+  num_classes: 10
+  input_size: [256, 256]
+  backbone: "resnet18"
+  pretrained: false
+
+training:
+  batch_size: 32
+  num_epochs: 50
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  scheduler_step: 10
+  scheduler_gamma: 0.1
+
+data:
+  classes: ["dance", "swim", "run", "jump", "sit", "stand", "walk", "cycle", "play", "other"]
+  train_split: 0.8
+  val_split: 0.1
+  test_split: 0.1
+
+paths:
+  model_dir: "./models"
+  log_dir: "./logs"
+  data_dir: "./data"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "app.log"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 2
+  timeout: 30
+  max_upload_size: 10  # MB
+
+monitoring:
+  enabled: true
+  prometheus_port: 8001
+  metrics_path: "/metrics"
+  health_check_interval: 30
