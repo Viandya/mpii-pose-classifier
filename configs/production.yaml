@@ -1,0 +1,71 @@
+extends: base.yaml
+
+model:
+  pretrained: false
+  checkpoint: "best_model.pth"
+
+training:
+  batch_size: 64
+  num_epochs: 100
+
+data:
+  sample_size: null
+
+paths:
+  data_dir: "/data/mpii"
+  model_dir: "/models"
+  log_dir: "/var/log/pose-classifier"
+
+api:
+  reload: false
+  debug: false
+  workers: 4
+  timeout: 60
+  max_upload_size: 50  # MB
+
+logging:
+  level: "INFO"
+  file: "/var/log/pose-classifier/app.log"
+  rotation: "10 MB"
+  retention: "30 days"
+
+database:
+  url: "${DATABASE_URL}" 
+  pool_size: 20
+  max_overflow: 30
+
+caching:
+  enabled: true
+  redis_url: "${REDIS_URL}"
+  ttl: 3600 
+
+security:
+  cors_origins:
+    - "https://yourdomain.com"
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+
+monitoring:
+  enabled: true
+  sentry_dsn: "${SENTRY_DSN}"
+  datadog:
+    api_key: "${DATADOG_API_KEY}"
+    app_key: "${DATADOG_APP_KEY}"
+
+kubernetes:
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  liveness_probe:
+    path: "/health"
+    initial_delay: 30
+    period: 10
+  readiness_probe:
+    path: "/health"
+    initial_delay: 5
+    period: 5
