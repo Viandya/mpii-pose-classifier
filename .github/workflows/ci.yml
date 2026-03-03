@@ -17,13 +17,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install httpx pytest
+        pip install -r requirements.txt
+        pip install "fastapi[all]" pytest
 
     - name: Run tests
-      run: |
-        export PYTHONPATH=$PYTHONPATH:.
-        python -m pytest tests/ -v
+      run: PYTHONPATH=. pytest tests/ -v
 
     - name: Build Docker image
       run: docker build -t pose-classifier:latest .
