@@ -4,10 +4,10 @@ scikit-learn
 matplotlib
 pillow
 pandas
-pytest
+fastapi
 httpx
+pytest
 numpy
 # for production:
 gunicorn 
-fastapi  
 prometheus-client  
