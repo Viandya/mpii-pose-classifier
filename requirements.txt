@@ -5,6 +5,7 @@ matplotlib
 pillow
 pandas
 pytest
+httpx
 numpy
 # for production:
 gunicorn 
