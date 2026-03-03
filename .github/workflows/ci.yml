@@ -21,7 +21,7 @@ jobs:
         pip install "fastapi[all]" pytest
 
     - name: Run tests
-      run: PYTHONPATH=. pytest tests/ -v
+      run: PYTHONPATH=./src pytest tests/ -v
 
     - name: Build Docker image
       run: docker build -t pose-classifier:latest .
